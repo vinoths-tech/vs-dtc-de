@@ -1,0 +1,127 @@
+-- Q1: Install Google Cloud SDK. What's the version you have? (To get the version, run gcloud --version)
+% gcloud --version
+Google Cloud SDK 369.0.0
+bq 2.0.72
+core 2022.01.14
+gsutil 5.6
+
+-- Q2: terraform apply command
+% terraform apply
+var.project
+  Your GCP Project ID
+
+  Enter a value: vs-dtc-de
+
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # google_bigquery_dataset.dataset will be created
+  + resource "google_bigquery_dataset" "dataset" {
+      + creation_time              = (known after apply)
+      + dataset_id                 = "trips_data_all"
+      + delete_contents_on_destroy = false
+      + etag                       = (known after apply)
+      + id                         = (known after apply)
+      + last_modified_time         = (known after apply)
+      + location                   = "us-east4"
+      + project                    = "vs-dtc-de"
+      + self_link                  = (known after apply)
+
+      + access {
+          + domain         = (known after apply)
+          + group_by_email = (known after apply)
+          + role           = (known after apply)
+          + special_group  = (known after apply)
+          + user_by_email  = (known after apply)
+
+          + view {
+              + dataset_id = (known after apply)
+              + project_id = (known after apply)
+              + table_id   = (known after apply)
+            }
+        }
+    }
+
+  # google_storage_bucket.data-lake-bucket will be created
+  + resource "google_storage_bucket" "data-lake-bucket" {
+      + force_destroy               = true
+      + id                          = (known after apply)
+      + location                    = "US-EAST4"
+      + name                        = "dtc_data_lake_vs-dtc-de"
+      + project                     = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + uniform_bucket_level_access = true
+      + url                         = (known after apply)
+
+      + lifecycle_rule {
+          + action {
+              + type = "Delete"
+            }
+
+          + condition {
+              + age                   = 30
+              + matches_storage_class = []
+              + with_state            = (known after apply)
+            }
+        }
+
+      + versioning {
+          + enabled = true
+        }
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_bigquery_dataset.dataset: Creating...
+google_storage_bucket.data-lake-bucket: Creating...
+google_storage_bucket.data-lake-bucket: Creation complete after 1s [id=dtc_data_lake_vs-dtc-de]
+google_bigquery_dataset.dataset: Creation complete after 1s [id=projects/vs-dtc-de/datasets/trips_data_all]
+
+Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+-----------------------------------------------------------------------------------------------------------------------
+-- Q3: How many taxi trips were there on January 15?
+
+select count(1)
+from yellow_taxi_trips 
+where to_char(tpep_pickup_datetime,'DD-Mon') = '15-Jan'
+
+-- Q4: On which day it was the largest tip in January? (note: it's not a typo, it's "tip", not "trip")
+
+select * from yellow_taxi_trips where tip_amount in (
+select max(tip_amount)
+from yellow_taxi_trips where to_char(tpep_pickup_datetime,'Mon') = 'Jan')
+
+-- Q5: What was the most popular destination for passengers picked up in central park on January 14? 
+--     Enter the zone name (not id). If the zone name is unknown (missing), write "Unknown
+
+select b."Zone" as Popular_DropOff_Loc, number_of_trips from
+(select t."DOLocationID", count (t.index) as number_of_trips
+from yellow_taxi_trips t, zones z 
+where t."PULocationID" = z."LocationID" and
+z."Zone" = 'Central Park' -- Pickup location
+group by t."DOLocationID"
+order by number_of_trips desc) a, zones b
+where a."DOLocationID" = b."LocationID"
+order by number_of_trips desc limit 1
+
+
+-- Q6: What's the pickup-dropoff pair with the largest average price for a ride (calculated based on total_amount)? 
+--     Enter two zone names separated by a slash For example:"Jamaica Bay / Clinton East
+-- 	   "If any of the zone names are unknown (missing), write "Unknown". For example, "Unknown / Clinton East".
+
+select concat (coalesce(pz."Zone",'Unknown'),' / ', coalesce(dz."Zone",'Unknown')) as pickup_dropoff_pair, avg(t.total_amount) as avg_total_amount
+from yellow_taxi_trips t, zones pz, zones dz 
+where t."PULocationID" = pz."LocationID" and
+t."DOLocationID" = dz."LocationID" 
+group by pickup_dropoff_pair
+order by avg_total_amount desc limit 1
