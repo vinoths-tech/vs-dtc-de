@@ -10,4 +10,4 @@ Course Reference Link: https://github.com/DataTalksClub/data-engineering-zoomcam
 * Terraform Scripts to setup and configure the key services from GCP Account
 * Developed various SQL Queries for different scenarios using the datasets loaded onto Postgres Database
 
-Twiter Handle: @vinoths2808
+Twitter Handle: @vinoths2808
