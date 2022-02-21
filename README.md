@@ -71,3 +71,20 @@ Course Reference Link: https://github.com/DataTalksClub/data-engineering-zoomcam
     - Walkthrough of ML Dev Lifecycle and associated BigQuery features (including ML model deployment using Docker images) 
 * Integration of BigQuery with Airflow:
     - Coding Workshop to show how we can use Airflow to automate the BigQuery tables creation based on the data ingested in the Google Cloud Storage (Data lake) using DAG with tasks like BigQueryCreateExternalTableOperator, BigQueryInsertJobOperator and GCStoGCSOperator
+
+**Data Talk Club: Data Engineering Course - Week 4 Summary:** [VS]
+* Data Engineering Tools setup and Configuration (New) - DBT (Data Build Tool), Google Data Studio and Metabase
+* Analytics Engineering Overview:
+    - Data Domain Developments: Cloud DWH (MPP) >> Data-pipelines-as-a-service >> SQL-first >> Code Version Control >> Self-service Analytics >> Data Governance
+    - Roles in a data team - Data Engineer (Prepares and maintains infra for the data team needs), Data Analyst (uses data to answer business questions) and Analytics Engineer (Brings SE practices to the efforts of Data Analysts, Data Engineers/Scientists)
+    - Analytics Engineer's Sample Tools: Data Loading (e.g. Fivetran) >> Data Storing (e.g. BigQuery) >> Data Modelling (e.g. DBT) >> Data Presentation (e.g. Looker)
+    - Quick recap on ETL Vs ELT, Kimball's Dimensional Modelling and Deep-dive on Dimensional Modeling Architecture
+* Overview of DBT:
+    - DBT is a transformation tool allows to deploy analytics code (using SQLs) following SE best practices like Modularity, Protability, CI/CD, and Documentation
+    - How DBT works? It defines a Modeling layer (Semantics) on top of DWH. This modeling layer will turn tables into models which will then transformed into derived models and it is persisted back in DWH
+    - DBT offerings: dbt Core (Open-source, CLI) and dbt Cloud (SaaS, Web-based IDE to develop, run and test a dbt project)
+* DBT Hands-on Coding Sessions Summary:
+    - Series of Hands-on coding sessions using dbt Cloud using BigQuery (option 1) and dbt Core (local install and CLI) using Postgres DB (option 2)
+    - DBT Configurations, Project Setup, Project directory structure and Integrations (e.g. Github, BigQuery and Postgres DB)
+    - Development, testing and execution of the dbt models, seeds, macros, packages, variables, documentation and Production Deployments
+    - Development of BI/Analytical Reports using Google Data Studio and Metabase for different scenarios / requirements
