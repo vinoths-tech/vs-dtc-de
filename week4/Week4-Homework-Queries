@@ -1,0 +1,18 @@
+-- Question 1
+SELECT count(*) FROM `vs-dtc-de.production.fact_trips`
+WHERE EXTRACT(YEAR FROM pickup_datetime) IN  (2019, 2020) 
+
+-- 61,602,987
+
+-- Selected answer:
+-- 61635151
+
+-- Question 3
+SELECT count(*) FROM `vs-dtc-de.production.stg_fhv_tripdata`
+where extract(year from pickup_datetime) in (2019)
+-- 42084899
+
+-- Question 4
+SELECT count(*) FROM `vs-dtc-de.production.fact_fhv_trips`
+where extract(year from pickup_datetime) in (2019)
+-- 22676253
